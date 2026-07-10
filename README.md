@@ -90,11 +90,11 @@ python3 -m http.server 8080
 
 ## GitHub Pages 배포
 
-이 저장소에는 배포용 GitHub Actions 워크플로우(`.github/workflows/deploy.yml`)가 포함돼 있습니다.
+빌드 과정이 없는 순수 정적 사이트라 GitHub Actions 없이 **Deploy from a branch**로 충분합니다.
 
-1. 이 폴더 내용을 GitHub 저장소에 push (`.github`, `.nojekyll` 포함).
-2. **Settings → Pages → Source: GitHub Actions** 선택.
-3. push 할 때마다 자동 빌드·배포되어 `https://<계정>.github.io/<저장소>/` 에 공개됩니다.
+1. 이 폴더 내용을 GitHub 저장소에 push (`.nojekyll` 포함).
+2. **Settings → Pages → Source: Deploy from a branch** 선택 → Branch: `main`, 폴더: `/ (root)`.
+3. push 할 때마다 자동 배포되어 `https://<계정>.github.io/` 에 공개됩니다.
 
 > 처음부터 끝까지 따라 하는 상세 가이드는 **MANUAL.md** 를 참고하세요.
 > 커스텀 도메인을 쓸 경우 저장소 루트에 `CNAME` 파일(도메인 한 줄)을 두세요.

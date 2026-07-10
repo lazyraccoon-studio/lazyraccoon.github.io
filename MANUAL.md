@@ -9,14 +9,16 @@
 - GitHub 계정 하나
 - 이 폴더(압축을 푼 파일 전체)
 
-> ⚠️ 이 폴더 안의 **`.github` 폴더**와 **`.nojekyll` 파일**(점으로 시작)은 숨김 파일입니다.
-> 반드시 함께 업로드되어야 자동 배포가 동작합니다. 파일 탐색기에서 "숨김 파일 표시"를 켜서 확인하세요.
+> ⚠️ 이 폴더 안의 **`.nojekyll` 파일**(점으로 시작)은 숨김 파일입니다.
+> 반드시 함께 업로드되어야 사이트가 정상 동작합니다. 파일 탐색기에서 "숨김 파일 표시"를 켜서 확인하세요.
 
 ---
 
 ## 1. 저장소(repository) 만들기
 1. GitHub 로그인 → 오른쪽 위 **`+` → New repository**.
-2. Repository name 입력 (예: `lazy-raccoon-studio`).
+2. Repository name 입력.
+   - **`<계정명>.github.io`** 로 정확히 지으면 → 루트 주소(`https://<계정>.github.io/`)로 바로 배포됩니다.
+   - 그 외 아무 이름이면 → 서브패스(`https://<계정>.github.io/<저장소명>/`)로 배포됩니다. (이 사이트는 상대경로만 써서 어느 쪽이든 정상 동작합니다.)
 3. **Public** 선택. (Private도 되지만 Pages는 Public이 간단)
 4. 나머지는 비워두고 **Create repository**.
 
@@ -27,11 +29,11 @@
 ### 방법 A — 웹에서 드래그 (가장 쉬움)
 1. 방금 만든 저장소 페이지에서 **Add file → Upload files**.
 2. 이 폴더 **안의 모든 파일/폴더를 통째로** 드래그해서 올립니다.
-   (`index.html`, `assets/`, `posts/`, `projects/`, `.github/`, `.nojekyll` 등)
+   (`index.html`, `assets/`, `posts/`, `projects/`, `.nojekyll` 등)
 3. 아래 **Commit changes** 클릭.
 
-> 웹 업로드가 숨김 폴더(`.github`)를 빠뜨릴 수 있습니다. 업로드 후 저장소에
-> `.github/workflows/deploy.yml` 이 보이는지 꼭 확인하세요. 없으면 방법 B를 쓰세요.
+> 웹 업로드가 숨김 파일(`.nojekyll`)을 빠뜨릴 수 있습니다. 업로드 후 저장소 루트에
+> `.nojekyll` 이 보이는지 꼭 확인하세요. 없으면 방법 B를 쓰세요.
 
 ### 방법 B — git 명령 (권장)
 ```bash
@@ -48,20 +50,21 @@ git push -u origin main
 
 ## 3. GitHub Pages 켜기
 1. 저장소 → **Settings → Pages**.
-2. **Build and deployment → Source** 를 **GitHub Actions** 로 선택.
-   (❗ "Deploy from a branch" 가 아니라 **GitHub Actions** 입니다.)
-3. 끝. 별도 저장 버튼 없이 선택만 하면 됩니다.
+2. **Build and deployment → Source** 를 **Deploy from a branch** 로 선택.
+3. **Branch** 를 `main` / `/ (root)` 로 선택 후 **Save**.
+
+빌드 과정이 없는 순수 정적 사이트라 GitHub Actions는 필요 없습니다.
 
 ---
 
 ## 4. 배포 확인
-1. 저장소 상단 **Actions** 탭으로 이동.
-2. **Deploy to GitHub Pages** 워크플로우가 돌고 있습니다 (노란 점 → 초록 체크).
-3. 초록 체크가 되면 **Settings → Pages** 상단에 공개 주소가 뜹니다:
+1. push 후 1~2분 기다립니다 (Actions 탭 없이 자동 처리됩니다).
+2. **Settings → Pages** 상단에 공개 주소가 뜹니다:
    ```
-   https://<계정>.github.io/<저장소>/
+   https://<계정>.github.io/            (저장소명이 <계정>.github.io 인 경우)
+   https://<계정>.github.io/<저장소명>/  (그 외)
    ```
-4. 주소를 열면 사이트가 보입니다. 🦝
+3. 주소를 열면 사이트가 보입니다. 🦝
 
 ---
 
@@ -140,6 +143,6 @@ python3 -m http.server 8080
 
 ## 문제 해결
 - **화면이 하얗고 글이 안 나와요** → `.nojekyll` 이 빠졌거나, 로컬에서 `file://` 로 열었을 때입니다. 서버로 여세요.
-- **Actions가 실행 안 돼요** → `.github/workflows/deploy.yml` 이 저장소에 올라갔는지, Pages Source가 **GitHub Actions** 인지 확인.
+- **사이트가 안 바뀌어요** → Settings → Pages의 Source가 **Deploy from a branch**, Branch가 `main` / `/ (root)` 인지 확인. push 후 1~2분 정도 걸릴 수 있습니다.
 - **이미지가 안 보여요** → 경로 대소문자를 확인하세요. GitHub는 대소문자를 구분합니다.
-- **404** → 주소 끝에 `/` 가 있는지, 배포가 초록 체크로 끝났는지 확인.
+- **404** → 주소 끝에 `/` 가 있는지 확인하세요.
