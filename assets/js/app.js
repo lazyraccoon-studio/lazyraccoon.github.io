@@ -10,7 +10,7 @@
   var state = {
     lang: localStorage.getItem('lrs_lang') || 'ko',
     theme: localStorage.getItem('lrs_theme') || 'light',
-    font: localStorage.getItem('lrs_font') || 'pixel'
+    font: localStorage.getItem('lrs_font') || 'mono'
   };
 
   var FONTS = [
