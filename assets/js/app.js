@@ -11,7 +11,8 @@
     lang: localStorage.getItem('lrs_lang') || 'ko',
     theme: localStorage.getItem('lrs_theme') || 'light',
     font: sessionStorage.getItem('lrs_font') || 'pixel',
-    menuOpen: false
+    menuOpen: false,
+    lightboxSrc: null
   };
 
   var FONTS = [
@@ -309,24 +310,33 @@
       default: body = pageHome();
     }
     document.getElementById('app-root').innerHTML =
-      nav(r.page) + '<main>' + body + '</main>' + mascotBand(r.page) + footer();
+      nav(r.page) + '<main>' + body + '</main>' + mascotBand(r.page) + footer() + lightbox();
     if (r.page === 'post') loadPost(r.slug);
     if (r.page === 'project') loadProject(r.slug);
-    setMenuLock(state.menuOpen);
+    setScrollLock(state.menuOpen || !!state.lightboxSrc);
   }
 
-  /* Locks background scroll while the mobile drawer is open. Uses
-     position:fixed on body (not overflow:hidden) because overflow:hidden on
-     html/body breaks position:sticky for .nav in some browsers. */
+  function lightbox() {
+    if (!state.lightboxSrc) return '';
+    return '<div class="lightbox open" data-action="lightbox-close">' +
+      '<button class="lightbox-close" data-action="lightbox-close" aria-label="close">✕</button>' +
+      '<img src="' + esc(state.lightboxSrc) + '" alt="">' +
+    '</div>';
+  }
+
+  /* Locks background scroll while the mobile drawer or image lightbox is
+     open. Uses position:fixed on body (not overflow:hidden) because
+     overflow:hidden on html/body breaks position:sticky for .nav in some
+     browsers. */
   var lockScrollY = 0;
-  function setMenuLock(on) {
-    var locked = document.body.classList.contains('menu-lock');
+  function setScrollLock(on) {
+    var locked = document.body.classList.contains('scroll-lock');
     if (on && !locked) {
       lockScrollY = window.scrollY;
       document.body.style.top = '-' + lockScrollY + 'px';
-      document.body.classList.add('menu-lock');
+      document.body.classList.add('scroll-lock');
     } else if (!on && locked) {
-      document.body.classList.remove('menu-lock');
+      document.body.classList.remove('scroll-lock');
       document.body.style.top = '';
       window.scrollTo(0, lockScrollY);
     }
@@ -362,12 +372,16 @@
 
   /* ---------- events ---------- */
   document.addEventListener('click', function (e) {
+    if (e.target.closest('.lightbox img')) return; // clicking the image itself shouldn't close it
+    var postImg = e.target.closest('#post-body img');
+    if (postImg) { state.lightboxSrc = postImg.getAttribute('src'); render(); return; }
     var el = e.target.closest('[data-action]');
     if (!el) return;
     var a = el.getAttribute('data-action');
     if (a === 'nav') { state.menuOpen = false; go('#/' + (el.getAttribute('data-page') === 'home' ? '' : el.getAttribute('data-page'))); window.scrollTo(0, 0); }
     else if (a === 'nav-hash') { if (el.classList.contains('disabled')) return; go(el.getAttribute('data-hash')); window.scrollTo(0, 0); }
     else if (a === 'menu') { state.menuOpen = !state.menuOpen; render(); }
+    else if (a === 'lightbox-close') { state.lightboxSrc = null; render(); }
     else if (a === 'post') { go('#/blog/' + el.getAttribute('data-slug')); window.scrollTo(0, 0); }
     else if (a === 'project') { go('#/work/' + el.getAttribute('data-slug')); window.scrollTo(0, 0); }
     else if (a === 'lang') { state.lang = el.getAttribute('data-lang'); localStorage.setItem('lrs_lang', state.lang); document.documentElement.setAttribute('data-lang', state.lang); render(); }
@@ -378,7 +392,9 @@
   window.addEventListener('hashchange', render);
 
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && state.menuOpen) { state.menuOpen = false; render(); }
+    if (e.key !== 'Escape') return;
+    if (state.lightboxSrc) { state.lightboxSrc = null; render(); }
+    else if (state.menuOpen) { state.menuOpen = false; render(); }
   });
 
   /* ---------- boot ---------- */

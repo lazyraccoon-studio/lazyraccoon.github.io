@@ -54,6 +54,11 @@ body {
 html[data-font="mono"] body { font-family: 'JetBrains Mono', 'Nanum Gothic Coding', monospace; }
 html[data-font="sans"] body { font-family: 'Pretendard', 'JetBrains Mono', sans-serif; }
 
+/* scroll lock (mobile drawer + image lightbox) uses position:fixed on body
+   (see app.js) — overflow:hidden on html breaks position:sticky for .nav
+   in some browsers, so avoid it. */
+body.scroll-lock { position: fixed; left: 0; right: 0; }
+
 a { color: var(--accent); text-decoration: none; }
 a:hover { opacity: .8; }
 img { display: block; }
@@ -195,7 +200,7 @@ input, textarea, button { font-family: inherit; }
 .chip { font-size: 13px; color: var(--ink-soft); border: 1px solid var(--border2); background: var(--bg2); padding: 8px 14px; border-radius: 7px; }
 
 /* ---------- post ---------- */
-.post { max-width: 760px; margin: 0 auto; padding: 56px 0 0; min-width: 0; }
+.post { max-width: 760px; margin: 0 auto; padding: 56px 28px 0; min-width: 0; }
 .post .back { cursor: pointer; font-size: 13px; color: var(--accent); }
 .post .meta { display: flex; align-items: center; gap: 10px; margin: 26px 0 14px; }
 .post .meta .readtime { font-size: 12px; color: var(--muted); }
@@ -208,8 +213,14 @@ input, textarea, button { font-family: inherit; }
 .post-body code { font-family: inherit; }
 .post-body p code, .post-body li code { background: var(--bg2); border: 1px solid var(--border2); padding: 1px 6px; border-radius: 4px; font-size: 14px; }
 .post-body { overflow-wrap: break-word; word-break: break-word; }
-.post-body img { max-width: 100%; height: auto; }
+.post-body img { max-width: 100%; height: auto; border-radius: 8px; cursor: zoom-in; }
 .post-foot { border-top: 1px solid var(--border); padding-top: 24px; margin-top: 16px; }
+
+/* ---------- image lightbox ---------- */
+.lightbox { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,.85); align-items: center; justify-content: center; padding: 40px 24px; cursor: zoom-out; }
+.lightbox.open { display: flex; }
+.lightbox img { max-width: 100%; max-height: 100%; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,.5); cursor: default; }
+.lightbox-close { position: fixed; top: 18px; right: 18px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,.35); border-radius: 6px; background: rgba(0,0,0,.4); color: #fff; font-size: 16px; cursor: pointer; z-index: 201; }
 
 /* ---------- contact ---------- */
 .contact-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 24px; align-items: stretch; }
@@ -379,10 +390,6 @@ input, textarea, button { font-family: inherit; }
     border: 1px solid var(--border2); border-radius: 6px; background: none;
     color: var(--ink); font-size: 16px; cursor: pointer;
   }
-  /* scroll lock uses position:fixed on body (see app.js) — overflow:hidden
-     on html breaks position:sticky for .nav in some browsers, so avoid it. */
-  body.menu-lock { position: fixed; left: 0; right: 0; }
-
   /* all multi-col blocks stack */
   .build-grid, .work-grid, .process-grid, .values-grid,
   .contact-grid, .svc, .mascot-band { grid-template-columns: 1fr; }
@@ -438,10 +445,12 @@ input, textarea, button { font-family: inherit; }
   .foot-mascot { display: none; }
 
   /* post */
-  .post { padding-top: 32px; }
+  .post { padding: 32px 18px 0; }
   .post-body h1 { font-size: 26px; }
   .post-body h2 { font-size: 20px; }
   .post-body p, .post-body ul, .post-body ol { font-size: 15px; }
+  .post-body pre { padding: 16px 18px; }
+  .lightbox-close { top: 14px; right: 14px; }
 }
 
 /* narrow phones */
