@@ -45,19 +45,23 @@
     if (parts[0] === 'blog' && parts[1] === 'page' && parts[2]) return { page: 'blog', pageNum: parseInt(parts[2], 10) || 1 };
     if (parts[0] === 'blog' && parts[1]) return { page: 'post', slug: parts[1] };
     if (parts[0] === 'work' && parts[1]) return { page: 'project', slug: parts[1] };
+    if (parts[0] === 'work') return { page: 'work' };
     return { page: parts[0] };
   }
   function go(hash) { location.hash = hash; }
 
   /* ---------- reusable bits ---------- */
   function navLink(page, key, current) {
-    var active = (page === current) || (page === 'blog' && current === 'post');
+    var active = (page === current) ||
+      (page === 'blog' && current === 'post') ||
+      (page === 'work' && current === 'project');
     return '<span class="nav-link' + (active ? ' active' : '') + '" data-action="nav" data-page="' + page + '">' + esc(t(key)) + '</span>';
   }
 
   function navItems(current) {
     return navLink('studio', 'nav_studio', current) +
       navLink('services', 'nav_services', current) +
+      navLink('work', 'nav_work', current) +
       navLink('blog', 'nav_blog', current) +
       navLink('contact', 'nav_contact', current) +
       '<div class="seg">' +
@@ -123,18 +127,22 @@
   }
 
   /* ---------- pages ---------- */
-  function pageHome() {
-    var build = window.SERVICES.map(function (s) {
-      return '<div class="build-cell"><div class="id">' + esc(s.id[L()]) + '</div><h3>' + esc(s.title) + '</h3><p>' + esc(s.d[L()]) + '</p></div>';
-    }).join('');
-
-    var work = projectsIndex.map(function (p) {
+  function workCards(list) {
+    return list.map(function (p) {
       var meta = p.type[L()] + ' · ' + p.year + ' · ' + p.status[L()];
       return '<div class="work-card" data-action="project" data-slug="' + esc(p.slug) + '" style="cursor:pointer">' +
         '<div class="work-cover"><img class="pixel" src="assets/img/logo-raccoon-bust.png" alt=""></div>' +
         '<div class="work-body"><div class="work-name">' + esc(p.name) + '</div><div class="work-meta">' + esc(meta) + '</div><p>' + esc(p.blurb[L()]) + '</p></div>' +
       '</div>';
     }).join('');
+  }
+
+  function pageHome() {
+    var build = window.SERVICES.map(function (s) {
+      return '<div class="build-cell"><div class="id">' + esc(s.id[L()]) + '</div><h3>' + esc(s.title) + '</h3><p>' + esc(s.d[L()]) + '</p></div>';
+    }).join('');
+
+    var work = workCards(projectsIndex.slice(0, 3));
 
     var devlog = postsIndex.slice(0, 3).map(function (p) {
       return '<div class="devlog-row" data-action="post" data-slug="' + esc(p.slug) + '">' +
@@ -163,13 +171,22 @@
 
         '<div class="block"><div class="section-label">' + esc(t('build_label')) + '</div><div class="build-grid">' + build + '</div></div>' +
 
-        '<div class="block"><div class="head-row"><span class="section-label" style="margin:0">' + esc(t('work_label')) + '</span><span class="more" data-action="nav" data-page="services">' + esc(t('work_all')) + '</span></div>' +
-          '<div class="work-grid">' + work + '</div><div class="note">' + esc(t('work_note')) + '</div></div>' +
+        '<div class="block"><div class="head-row"><span class="section-label" style="margin:0">' + esc(t('work_label')) + '</span><span class="more" data-action="nav" data-page="work">' + esc(t('work_all')) + '</span></div>' +
+          '<div class="work-grid">' + work + '</div></div>' +
 
         '<div class="block"><div class="head-row"><span class="section-label" style="margin:0">' + esc(t('devlog_label')) + '</span><span class="more" data-action="nav" data-page="blog">' + esc(t('devlog_all')) + '</span></div>' +
           '<div class="devlog">' + devlog + '</div></div>' +
       '</div>' +
     '</div>';
+  }
+
+  function pageWork() {
+    return '<div class="page"><div class="container" style="padding-top:56px">' +
+      '<div class="cmd">' + promptLine(t('work_cmd')) + '</div>' +
+      '<h1 class="page-h1">' + esc(t('work_h')) + '</h1>' +
+      '<p class="page-sub" style="max-width:640px">' + esc(t('work_sub')) + '</p>' +
+      '<div class="work-grid">' + workCards(projectsIndex) + '</div>' +
+    '</div></div>';
   }
 
   function pageStudio() {
@@ -194,14 +211,12 @@
     var steps = window.STEPS.map(function (s) {
       return '<div class="step"><div class="n">' + esc(s.n) + '</div><h4>' + esc(s.h[L()]) + '</h4><p>' + esc(s.d[L()]) + '</p></div>';
     }).join('');
-    var chips = window.STACK.map(function (x) { return '<span class="chip">' + esc(x) + '</span>'; }).join('');
     return '<div class="page"><div class="container" style="padding-top:56px">' +
       '<div class="cmd">' + promptLine(t('services_cmd')) + '</div>' +
       '<h1 class="page-h1">' + esc(t('services_h')) + '</h1>' +
       '<p class="page-sub">' + esc(t('services_sub')) + '</p>' +
       '<div class="svc-list">' + list + '</div>' +
       '<div class="block"><div class="section-label">' + esc(t('process_label')) + '</div><div class="process-grid">' + steps + '</div></div>' +
-      '<div class="block"><div class="section-label">' + esc(t('stack_label')) + '</div><div class="stack">' + chips + '</div></div>' +
     '</div></div>';
   }
 
@@ -278,15 +293,15 @@
   /* ---------- project detail ---------- */
   function pageProject(slug) {
     var meta = projectsIndex.filter(function (p) { return p.slug === slug; })[0];
-    if (!meta) { go('#/'); return ''; }
+    if (!meta) { go('#/work'); return ''; }
     var metaLine = meta.type[L()] + ' · ' + meta.year + ' · ' + meta.status[L()];
     var body = projCache[slug + '.' + L()] || '<p style="color:var(--muted)">' + esc(t('loading')) + '</p>';
     return '<div class="page"><div class="post">' +
-      '<span class="back" data-action="nav" data-page="home">' + esc(t('proj_back')) + '</span>' +
+      '<span class="back" data-action="nav" data-page="work">' + esc(t('back')) + '</span>' +
       '<div class="meta"><span class="tag">' + esc(meta.tag) + '</span><span class="readtime">' + esc(metaLine) + '</span></div>' +
       '<div class="work-cover" style="height:200px;border:1px solid var(--border2);border-radius:12px;margin:8px 0 24px"><img class="pixel" src="assets/img/logo-raccoon-bust.png" alt=""></div>' +
       '<div class="post-body" id="post-body">' + body + '</div>' +
-      '<div class="post-foot"><span class="back" data-action="nav" data-page="home">' + esc(t('proj_back')) + '</span></div>' +
+      '<div class="post-foot"><span class="back" data-action="nav" data-page="work">' + esc(t('back')) + '</span></div>' +
     '</div></div>';
   }
   function loadProject(slug) {
@@ -305,6 +320,7 @@
     switch (r.page) {
       case 'studio': body = pageStudio(); break;
       case 'services': body = pageServices(); break;
+      case 'work': body = pageWork(); break;
       case 'blog': body = pageBlog(r.pageNum); break;
       case 'post': body = pagePost(r.slug); break;
       case 'project': body = pageProject(r.slug); break;

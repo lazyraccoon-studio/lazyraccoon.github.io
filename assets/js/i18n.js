@@ -5,7 +5,7 @@
    ============================================================ */
 window.I18N = {
   ko: {
-    nav_studio: './studio', nav_services: './services', nav_blog: './blog', nav_contact: './contact',
+    nav_studio: './studio', nav_services: './services', nav_work: './work', nav_blog: './blog', nav_contact: './contact',
 
     hero_name: '게으른 너구리 스튜디오',
     hero_sub: '# 게임 · 앱 · 서비스를 만드는 작은 개발 스튜디오',
@@ -14,6 +14,9 @@ window.I18N = {
     build_label: '// 우리가 만드는 것',
     work_label: '// 대표 작업',
     work_all: '모든 작업 보기 →',
+    work_cmd: 'ls ./work',
+    work_h: '작업 · 프로젝트',
+    work_sub: '게임, 앱, 외주까지. 우리가 만든 작업을 모았습니다.',
     work_note: '* 테스트 프로젝트입니다 — projects/ 의 .md 파일을 수정하세요.',
     devlog_label: '// 최근 개발일지',
     devlog_all: '블로그 전체 보기 →',
@@ -40,7 +43,6 @@ window.I18N = {
     page_prev: '이전',
     page_next: '다음',
     back: '← 목록으로',
-    proj_back: '← 홈으로',
     loading: '불러오는 중…',
 
     contact_cmd: 'cat contact.md',
@@ -73,7 +75,7 @@ window.I18N = {
     rights: '© 2026 게으른 너구리 스튜디오. All rights reserved.'
   },
   en: {
-    nav_studio: './studio', nav_services: './services', nav_blog: './blog', nav_contact: './contact',
+    nav_studio: './studio', nav_services: './services', nav_work: './work', nav_blog: './blog', nav_contact: './contact',
 
     hero_name: 'Lazy Raccoon Studio',
     hero_sub: '# A small dev studio building games, apps & services',
@@ -82,6 +84,9 @@ window.I18N = {
     build_label: '// WHAT WE BUILD',
     work_label: '// SELECTED WORK',
     work_all: 'View all work →',
+    work_cmd: 'ls ./work',
+    work_h: 'Work & Projects',
+    work_sub: 'Games, apps, and contract work — a collection of what we have built.',
     work_note: '* Test projects — edit the .md files in projects/.',
     devlog_label: '// RECENT DEVLOG',
     devlog_all: 'Read the blog →',
@@ -108,7 +113,6 @@ window.I18N = {
     page_prev: 'prev',
     page_next: 'next',
     back: '← Back to list',
-    proj_back: '← Back to home',
     loading: 'Loading…',
 
     contact_cmd: 'cat contact.md',

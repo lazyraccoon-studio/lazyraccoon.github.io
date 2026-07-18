@@ -1,6 +1,6 @@
 /* ============================================================
    data.js — structured content (projects, services, values,
-   process steps, tech stack). Bilingual fields use {ko, en}.
+   process steps). Bilingual fields use {ko, en}.
    Edit freely; app.js renders whatever is here.
    Blog posts are NOT here — they live as Markdown in /posts
    (see posts/posts.json).
@@ -65,5 +65,3 @@ window.STEPS = [
   { n: '04', h: { ko: '운영', en: 'Run' }, d: { ko: '출시 후에도 함께 갑니다.', en: 'We stay after launch.' } }
 ];
 
-/* Tech stack chips */
-window.STACK = ['TypeScript', 'React', 'Node.js', 'Unity', 'C#', 'Go', 'PostgreSQL', 'GitHub Actions', 'Cloudflare'];

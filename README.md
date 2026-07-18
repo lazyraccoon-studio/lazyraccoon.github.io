@@ -39,9 +39,9 @@ site/
 
 **문구(카피) 바꾸기** → `assets/js/i18n.js` 의 `ko`/`en` 값 수정.
 
-**프로젝트·서비스 내용 바꾸기** → `assets/js/data.js` (`PROJECTS`, `SERVICES`, `VALUES`, `STEPS`, `STACK`).
+**프로젝트·서비스 내용 바꾸기** → 서비스/가치/프로세스는 `assets/js/data.js` (`SERVICES`, `VALUES`, `STEPS`). 프로젝트 목록·본문은 `projects/`.
 
-**프로젝트 내용 바꾸기** → `projects/` 폴더. 카드 메타데이터는 `projects/projects.json`, 상세 내용은 `projects/<slug>.ko.md` / `.en.md`. (홈의 작업 카드를 누르면 `#/work/<slug>` 상세가 열립니다.)
+**프로젝트 내용 바꾸기** → `projects/` 폴더. 카드 메타데이터는 `projects/projects.json`, 상세 내용은 `projects/<slug>.ko.md` / `.en.md`. 목록은 `#/work`, 상세는 `#/work/<slug>`.
 
 **색상 바꾸기** → `assets/css/styles.css` 상단 `:root`(다크) / `[data-theme="light"]`(라이트) 변수.
 
@@ -102,4 +102,4 @@ python3 -m http.server 8080
 ## 라우팅 메모
 
 해시 기반 라우팅이라 서버 설정 없이 동작합니다:
-`#/` 홈 · `#/studio` · `#/services` · `#/blog` · `#/blog/<slug>` · `#/contact`
+`#/` 홈 · `#/studio` · `#/services` · `#/work` · `#/work/<slug>` · `#/blog` · `#/blog/<slug>` · `#/contact`
