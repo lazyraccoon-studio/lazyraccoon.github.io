@@ -10,3 +10,4 @@ assets/js/config.local.js
 scripts
 supabase
 docs
+.DS_Store
